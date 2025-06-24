@@ -1,0 +1,58 @@
+import RPi.GPIO as GPIO
+import picamera
+from time import sleep
+from gpiozero import DistanceSensor
+
+ledB_output = 22
+ledG_output = 24
+ledR_output = 23
+buzzer_output = 25
+echo_pin = 4
+trigger_pin = 17
+
+
+camera = picamera.PiCamera()
+camera.rotation = 180
+dist_sensor = DistanceSensor(echo=echo_pin, trigger=trigger_pin, max_distance=1)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(ledB_output, GPIO.OUT)
+GPIO.setup(ledR_output, GPIO.OUT)
+GPIO.setup(ledG_output, GPIO.OUT)
+GPIO.setup(buzzer_output, GPIO.OUT)
+
+camera.start_preview()
+sleep(2)
+recording_on = False
+print("Press CTRL-C to exit.\n")
+try:
+    while True:
+        print(dist_sensor.distance * 100)
+        if dist_sensor.distance * 100 < 10:
+            print(True)
+            GPIO.output(ledR_output, GPIO.HIGH)
+            GPIO.output(ledG_output, GPIO.LOW)
+            GPIO.output(ledB_output, 0)
+
+            GPIO.output(buzzer_output, GPIO.HIGH)
+            sleep(0.5)
+            GPIO.output(buzzer_output, GPIO.LOW)
+            sleep(0.5)
+
+if not recording_on:
+                camera.start_recording('/home/Swarnabha/Desktop/vid1.h264')
+                recording_on = True
+
+
+        else:
+            GPIO.output(ledG_output, GPIO.HIGH)
+            GPIO.output(ledR_output, GPIO.LOW)
+            GPIO.output(ledB_output, 0)
+
+            if recording_on:
+                camera.stop_recording()
+                recording_on = False
+
+        sleep(0.5)
+
+except KeyboardInterrupt:
+    camera.stop_preview()
