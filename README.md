@@ -1,4 +1,4 @@
-# Smart-Ring-for-Women-s-Safety-
+# Smart-Ring-for-Womens-Safety-
 Smart Ring for Women’s Safety
 Tools: Raspberry Pi, IoT Sensors, Python, Embedded Systems
 
